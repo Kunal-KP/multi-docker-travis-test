@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kunal-kp/travis-ci-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true kunal-kp/travis-ci-test npm run test
+
+after_success:
+  - docker build -t kunalkp/multi-client ./client
+  - docker build -t kunalkp/multi-nginx ./nginx
+  - docker build -t kunalkp/multi-server ./server
+  - docker build -t kunalkp/multi-worker ./worker
+  # Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push kunalkp/multi-client
+  - docker push kunalkp/multi-nginx
+  - docker push kunalkp/multi-server
+  - docker push kunalkp/multi-worker
