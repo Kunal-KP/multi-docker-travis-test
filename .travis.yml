@@ -21,3 +21,16 @@ after_success:
   - docker push kunalkp/multi-nginx
   - docker push kunalkp/multi-server
   - docker push kunalkp/multi-worker
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "ap-south-1"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-ap-south-1-672575099402"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
